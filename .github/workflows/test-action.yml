@@ -1,0 +1,37 @@
+name: test-action
+
+on:
+  push:
+    branches: [master]
+    # IMPORTANT: Avoids endless loop
+    paths-ignore:
+      - "README.md"
+  workflow_dispatch:
+    inputs:
+      src_ref:
+        description: Which branch to test?
+        required: true
+        default: master
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    name: Test Action
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare source file
+        run: |
+          echo "<div>$(whoami) - $(date)</div>" > test_results.log
+      - uses: unfor19/replacer-action@master
+        name: Update README.md file
+        with:
+          src-file-path: "test_results.log"
+          dst-file-path: "README.md"
+          start-value: "<!-- replacer_start -->"
+          end-value: "<!-- replacer_end -->"
+          git-user-name: "replacer-action"
+          git-user-email: "replacer-action@meirg.co.il"
+          git-commit-msg: "Updated by GitHub Actions"
+          git-skip-commit: false
+          git-skip-push: false
+          create-backup: true
