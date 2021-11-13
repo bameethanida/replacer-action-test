@@ -40,8 +40,6 @@ jobs:
           git-skip-commit: false
           git-skip-push: false
           create-backup: true
-    outputs:
-      test_job_status: ${{ job.status }}
 
   update-status-check:
     name: Update Status Check In Source Repository
@@ -54,7 +52,7 @@ jobs:
       SRC_WORKFLOW_NAME: ${{ github.event.inputs.src_workflow_name }}
       SRC_SHA: ${{ github.event.inputs.src_sha }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      TEST_JOB_STATUS: ${{ needs.test.outputs.test_job_status }}
+      TEST_JOB_STATUS: ${{ needs.test.status }}
     steps:
       - name: Update Source Repository Status Check
         run: |
