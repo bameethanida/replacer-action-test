@@ -52,7 +52,7 @@ jobs:
       SRC_WORKFLOW_NAME: ${{ github.event.inputs.src_workflow_name }}
       SRC_SHA: ${{ github.event.inputs.src_sha }}
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      TEST_JOB_STATUS: ${{ needs.test.status }}
+      TEST_JOB_STATUS: ${{ jobs.test.status }}
     steps:
       - name: Update Source Repository Status Check
         run: |
