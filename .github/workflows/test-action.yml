@@ -10,20 +10,13 @@ on:
     inputs:
       src_repository:
         description: Source Repository - {owner}/{repo_name}
-        required: false
-        default: ""
+        required: true
       src_workflow_name:
         description: Source Workflow Name
-        required: false
-        default: ""
-      src_workflow_run_id:
-        description: Source Workflow Run ID
-        required: false
-        default: -1
+        required: true
       src_sha:
         description: Source Repository SHA - GITHUB_SHA
-        required: false
-        default: ""
+        required: true
 
 jobs:
   test:
@@ -32,7 +25,6 @@ jobs:
     env:
       SRC_REPOSITORY: ${{ github.event.inputs.src_repository }}
       SRC_WORKFLOW_NAME: ${{ github.event.inputs.src_workflow_name }}
-      SRC_WORKFLOW_RUN_ID: ${{ github.event.inputs.src_workflow_run_id }}
       SRC_SHA: ${{ github.event.inputs.src_sha }}
     steps:
       - uses: actions/checkout@v2
@@ -58,11 +50,11 @@ jobs:
           curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
-            -d '{"state":"state", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
+            -d '{"state":"state", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/runs/'"${GITHUB_RUN_ID}"'"}'
       - name: Failed - Update Source Repository Status Check
-        if: failed()
+        if: failure()
         run: |
           curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
-            -d '{"state":"failed", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
+            -d '{"state":"failed", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/runs/'"${GITHUB_RUN_ID}"'"}'
