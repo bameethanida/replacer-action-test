@@ -8,6 +8,10 @@ on:
       - "README.md"
   workflow_dispatch:
     inputs:
+      src_repository:
+        description: Source Repository - {owner}/{repo_name}
+        required: false
+        default: ""
       src_workflow_name:
         description: Source Workflow Name
         required: false
@@ -22,12 +26,14 @@ jobs:
     runs-on: ubuntu-20.04
     name: Test Action
     env:
+      SRC_REPOSITORY: ${{ github.event.inputs.src_repository }}
       SRC_WORKFLOW_NAME: ${{ github.event.inputs.src_workflow_name }}
       SRC_WORKFLOW_RUN_ID: ${{ github.event.inputs.src_workflow_run_id }}
     steps:
       - uses: actions/checkout@v2
       - name: Prints Workflow Inputs
         run: |
+          echo "$SRC_REPOSITORY"
           echo "$SRC_WORKFLOW_NAME"
           echo "$SRC_WORKFLOW_RUN_ID"
       - name: Prepare Source File
