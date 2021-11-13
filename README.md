@@ -6,8 +6,6 @@ This repository is meant for testing the master branch of the action - [unfor19/
 
 <!-- replacer_start -->
 
-```bash
-This text will be auto replaced by replacer action
-```
+<div>runner - Sat Nov 13 00:32:28 UTC 2021</div>
 
 <!-- replacer_end -->
