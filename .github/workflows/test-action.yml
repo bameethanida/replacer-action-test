@@ -40,8 +40,8 @@ jobs:
           git-skip-commit: false
           git-skip-push: false
           create-backup: true
-      outputs:
-        test_job_status: ${{ job.status }}
+    outputs:
+      test_job_status: ${{ job.status }}
 
   update-status-check:
     name: Update Status Check In Source Repository
