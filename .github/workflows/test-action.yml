@@ -20,6 +20,10 @@ on:
         description: Source Workflow Run ID
         required: false
         default: -1
+      src_sha:
+        description: Source Repository SHA - GITHUB_SHA
+        required: false
+        default: ""
 
 jobs:
   test:
@@ -29,13 +33,9 @@ jobs:
       SRC_REPOSITORY: ${{ github.event.inputs.src_repository }}
       SRC_WORKFLOW_NAME: ${{ github.event.inputs.src_workflow_name }}
       SRC_WORKFLOW_RUN_ID: ${{ github.event.inputs.src_workflow_run_id }}
+      SRC_SHA: ${{ github.event.inputs.src_sha }}
     steps:
       - uses: actions/checkout@v2
-      - name: Prints Workflow Inputs
-        run: |
-          echo "$SRC_REPOSITORY"
-          echo "$SRC_WORKFLOW_NAME"
-          echo "$SRC_WORKFLOW_RUN_ID"
       - name: Prepare Source File
         run: |
           echo "<div>$(whoami) - $(date)</div>" > test_results.log
@@ -52,3 +52,16 @@ jobs:
           git-skip-commit: false
           git-skip-push: false
           create-backup: true
+      - name: Update Source Repository Status Check
+        if: always()
+        run: |
+          _STATE=""
+          if [[ "${{ success() }}" = "true" ]]; then
+            _STATE="success"
+          else
+            _STATE="failed"
+          fi
+          curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
+            -d '{"state":"'${_STATE}'", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
