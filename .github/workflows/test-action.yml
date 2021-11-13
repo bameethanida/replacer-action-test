@@ -45,17 +45,16 @@ jobs:
           git-skip-commit: false
           git-skip-push: false
           create-backup: true
-      - name: Success - Update Source Repository Status Check
-        if: ${{ success() }}
+      - name: Update Source Repository Status Check
+        if: ${{ always() }}
         run: |
+          _STATE=""
+          if [[ "${{ success() }}" = "true" ]]; then
+            _STATE="success"
+          else
+            _STATE="failed"
+          fi
           curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
-            -d '{"state":"state", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/runs/'"${GITHUB_RUN_ID}"'"}'
-      - name: Failed - Update Source Repository Status Check
-        if: ${{ failure() }}
-        run: |
-          curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
-            -d '{"state":"failed", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/runs/'"${GITHUB_RUN_ID}"'"}'
+            -d '{"state":"'${_STATE}'", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/runs/'"${GITHUB_RUN_ID}"'"}'
