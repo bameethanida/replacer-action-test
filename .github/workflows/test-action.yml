@@ -8,18 +8,29 @@ on:
       - "README.md"
   workflow_dispatch:
     inputs:
-      src_ref:
-        description: Which branch to test?
-        required: true
-        default: master
+      src_workflow_name:
+        description: Source Workflow Name
+        required: false
+        default: ""
+      src_workflow_run_id:
+        description: Source Workflow Run ID
+        required: false
+        default: -1
 
 jobs:
   test:
     runs-on: ubuntu-20.04
     name: Test Action
+    env:
+      SRC_WORKFLOW_NAME: ${{ github.event.inputs.src_workflow_name }}
+      SRC_WORKFLOW_RUN_ID: ${{ github.event.inputs.src_workflow_run_id }}
     steps:
       - uses: actions/checkout@v2
-      - name: Prepare source file
+      - name: Prints Workflow Inputs
+        run: |
+          echo "$SRC_WORKFLOW_NAME"
+          echo "$SRC_WORKFLOW_RUN_ID"
+      - name: Prepare Source File
         run: |
           echo "<div>$(whoami) - $(date)</div>" > test_results.log
       - uses: unfor19/replacer-action@master
