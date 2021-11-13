@@ -58,11 +58,11 @@ jobs:
           curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
-            -d '{"state":"state", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
+            -d '{"state":"state", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
       - name: Failed - Update Source Repository Status Check
         if: failed()
         run: |
           curl --fail -X POST -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             "https://api.github.com/repos/${SRC_REPOSITORY}/statuses/${SRC_SHA}" \
-            -d '{"state":"failed", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
+            -d '{"state":"failed", "context": "test-action", "description": "Status update for '"${SRC_REPOSITORY}"'", "target_url": "https://github.com/'${GITHUB_REPOSITORY}'/actions/workflows/'"${GITHUB_WORKFLOW}"'"}'
