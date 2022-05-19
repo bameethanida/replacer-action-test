@@ -34,8 +34,8 @@ jobs:
           dst-file-path: "README.md"
           start-value: "<!-- replacer_start -->"
           end-value: "<!-- replacer_end -->"
-          git-user-name: "replacer-action"
-          git-user-email: "replacer-action@meirg.co.il"
+          git-user-name: "bameethanida"
+          git-user-email: "bameejrn@outlook.com"
           git-commit-msg: "Updated by GitHub Actions"
           git-skip-commit: false
           git-skip-push: false
