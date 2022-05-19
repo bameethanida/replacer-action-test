@@ -1,11 +1,11 @@
 name: test-action
 
 on:
-  # push:
-  #   branches: [master]
-  #   # IMPORTANT: Avoids endless loop
-  #   paths-ignore:
-  #     - "README.md"
+  push:
+    branches: [master]
+    # IMPORTANT: Avoids endless loop
+    paths-ignore:
+      - "README.md"
   workflow_dispatch:
     inputs:
       src_repository:
